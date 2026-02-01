@@ -1,6 +1,6 @@
 # 🦅 PardusBot
 
-**Your AI-powered assistant that automates research, data extraction, and scheduled tasks.**
+**OpenClaw For data scientist**
 
 PardusBot runs AI agents on your schedule - extract data from websites, monitor competitors, track prices, generate reports, and more. All through a simple web interface.
 
