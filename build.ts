@@ -99,7 +99,7 @@ const { fileURLToPath } = require('url');
 const filename = fileURLToPath(require('url').pathToFileURL(__filename));
 const directory = dirname(filename);
 
-console.log('🦅 PardusBot v1.0.3');
+console.log('🦅 PardusBot v1.0.4');
 console.log('');
 console.log('📋 Enhanced API: http://localhost:13337');
 console.log('🌐 React Web UI: http://localhost:13338');

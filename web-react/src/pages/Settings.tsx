@@ -5,12 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Clock, Cpu, Key } from 'lucide-react';
+import { Clock, Cpu, Key, Timer } from 'lucide-react';
 import type { PardusConfig } from '@/types/config';
 
 export default function Settings() {
   const queryClient = useQueryClient();
   const [heartbeat, setHeartbeat] = useState(60);
+  const [agentTimeout, setAgentTimeout] = useState(15);
   const [pardusConfig, setPardusConfig] = useState<PardusConfig>({
     modelProvider: 'openai',
     model: 'gpt-4',
@@ -56,6 +57,13 @@ export default function Settings() {
       await queryClient.refetchQueries({ queryKey: ['config'] });
       await queryClient.invalidateQueries({ queryKey: ['server-status'] });
       await queryClient.refetchQueries({ queryKey: ['server-status'] });
+    },
+  });
+
+  const agentTimeoutMutation = useMutation({
+    mutationFn: (duration: number) => api.setAgentTimeout(duration),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['config'] });
     },
   });
 
@@ -112,6 +120,46 @@ export default function Settings() {
           <p className="text-xs text-muted-foreground">
             The heartbeat interval determines how often the task processor checks for new tasks.
             Lower values = more responsive, higher values = less CPU usage.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Agent Timeout Configuration */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Timer className="h-5 w-5" />
+            Agent Timeout
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Current: {config?.agentTimeout ? `${config.agentTimeout / 60000} minutes` : 'N/A'}
+            </p>
+            <div className="flex items-center gap-4">
+              <Input
+                type="number"
+                min="1"
+                max="60"
+                step="1"
+                value={config?.agentTimeout ? config.agentTimeout / 60000 : 15}
+                onChange={(e) => setAgentTimeout(parseInt(e.target.value) || 15)}
+                className="w-32"
+              />
+              <span>minutes</span>
+              <Button
+                onClick={() => agentTimeoutMutation.mutate(agentTimeout * 60000)}
+                disabled={agentTimeoutMutation.isPending}
+              >
+                {agentTimeoutMutation.isPending ? 'Updating...' : 'Update'}
+              </Button>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            The agent timeout determines how long to wait for an agent to complete a task before
+            cancelling it. If your tasks take a long time to complete, increase this value.
+            Range: 1-60 minutes.
           </p>
         </CardContent>
       </Card>

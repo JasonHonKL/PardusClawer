@@ -148,7 +148,7 @@ export const api = {
     return handleResponse<Config>(response);
   },
 
-  async updateConfig(data: { heartbeat?: number; agentType?: AgentType }): Promise<Config> {
+  async updateConfig(data: { heartbeat?: number; agentType?: AgentType; agentTimeout?: number }): Promise<Config> {
     const response = await fetch(`${API_BASE}/config`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -173,6 +173,15 @@ export const api = {
       body: JSON.stringify({ agentType }),
     });
     return handleResponse<{ success: boolean; agentType: AgentType }>(response);
+  },
+
+  async setAgentTimeout(duration: number): Promise<{ success: boolean; agentTimeout: number }> {
+    const response = await fetch(`${API_BASE}/config/agent-timeout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ duration }),
+    });
+    return handleResponse<{ success: boolean; agentTimeout: number }>(response);
   },
 
   async getPardusConfig(): Promise<Record<string, any>> {

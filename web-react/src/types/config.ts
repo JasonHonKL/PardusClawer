@@ -17,6 +17,7 @@ export interface PardusConfig {
 export interface Config {
   heartbeat: number;
   agentType: AgentType;
+  agentTimeout: number;
   pardusConfig?: PardusConfig;
 }
 

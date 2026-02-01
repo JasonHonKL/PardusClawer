@@ -20,6 +20,7 @@ import { loadMemory, saveMemory } from './memory/memory';
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { eventEmitter } from './config/event-emitter';
 import { getDefaultHeartbeat, setHeartbeat } from './config/heartbeat';
+import { getDefaultAgentTimeout, setAgentTimeout } from './config/agent-timeout';
 import { getAgentExecutor, getAgentType, setAgentType, AgentType } from './config/agentconfig';
 
 const PARDUS_CONFIG_FILE = join(getDataDir(), 'pardus-config.json');
@@ -313,6 +314,7 @@ serve({
       const config = {
         heartbeat: getDefaultHeartbeat(),
         agentType: getAgentType(),
+        agentTimeout: getDefaultAgentTimeout(),
       };
 
       return Response.json(config, { headers: corsHeaders });
@@ -330,9 +332,14 @@ serve({
         setAgentType(body.agentType);
       }
 
+      if (body.agentTimeout !== undefined) {
+        setAgentTimeout(body.agentTimeout);
+      }
+
       const config = {
         heartbeat: getDefaultHeartbeat(),
         agentType: getAgentType(),
+        agentTimeout: getDefaultAgentTimeout(),
       };
 
       return Response.json(config, { headers: corsHeaders });
@@ -362,6 +369,24 @@ serve({
       setAgentType(body.agentType);
 
       return Response.json({ success: true, agentType: getAgentType() }, { headers: corsHeaders });
+    }
+
+    // Update agent timeout
+    if (url.pathname === '/api/config/agent-timeout' && req.method === 'POST') {
+      const body = await req.json();
+
+      if (typeof body.duration !== 'number') {
+        return Response.json({ error: 'duration must be a number' }, { status: 400, headers: corsHeaders });
+      }
+
+      // Validate timeout is between 1 minute and 60 minutes
+      if (body.duration < 60000 || body.duration > 3600000) {
+        return Response.json({ error: 'duration must be between 60000 (1 minute) and 3600000 (60 minutes)' }, { status: 400, headers: corsHeaders });
+      }
+
+      setAgentTimeout(body.duration);
+
+      return Response.json({ success: true, agentTimeout: getDefaultAgentTimeout() }, { headers: corsHeaders });
     }
 
     // Get Pardus configuration

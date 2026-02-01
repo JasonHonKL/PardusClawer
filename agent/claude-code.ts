@@ -1,7 +1,6 @@
 import { spawn } from 'child_process';
 import { type AgentConfig, type AgentResult, type AgentExecutor } from './types';
-
-const AGENT_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+import { getDefaultAgentTimeout } from '../config/agent-timeout';
 
 const executeCommand = (command: string, args: string[], cwd: string, onStream?: (data: string) => void): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -9,11 +8,14 @@ const executeCommand = (command: string, args: string[], cwd: string, onStream?:
     let output = '';
     let errorOutput = '';
 
+    // Get current timeout from config
+    const agentTimeout = getDefaultAgentTimeout();
+
     // Set timeout to kill hanging processes
     const timeout = setTimeout(() => {
       childProcess.kill('SIGTERM');
-      reject(new Error(`Agent timed out after ${AGENT_TIMEOUT_MS}ms`));
-    }, AGENT_TIMEOUT_MS);
+      reject(new Error(`Agent timed out after ${agentTimeout}ms`));
+    }, agentTimeout);
 
     // Close stdin to prevent blocking
     childProcess.stdin?.end();
