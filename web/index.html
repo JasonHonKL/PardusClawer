@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PardusCrawler Manager</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+      background: #0f0f0f;
+      color: #e5e5e5;
+    }
+    h1 { color: #4ade80; margin-bottom: 5px; }
+    .subtitle { color: #9ca3af; margin-bottom: 20px; font-size: 14px; }
+    .container { max-width: 900px; margin: 0 auto; }
+
+    .section {
+      background: #1f1f1f;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+
+    .section h2 { margin-bottom: 15px; color: #60a5fa; }
+
+    input, textarea, button {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #374151;
+      background: #0f0f0f;
+      color: #e5e5e5;
+      font-size: 14px;
+    }
+
+    input, textarea { width: 100%; margin-bottom: 10px; }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #4ade80;
+    }
+
+    button {
+      cursor: pointer;
+      background: #4ade80;
+      color: #0f0f0f;
+      border: none;
+      font-weight: 600;
+      padding: 10px 20px;
+    }
+
+    button:hover { background: #22c55e; }
+    button:active { transform: scale(0.98); }
+
+    button.danger { background: #ef4444; color: white; }
+    button.danger:hover { background: #dc2626; }
+    button.secondary { background: #374151; color: white; }
+    button.secondary:hover { background: #4b5563; }
+
+    textarea { min-height: 80px; resize: vertical; font-family: inherit; }
+
+    .task-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .task-item {
+      background: #0f0f0f;
+      padding: 15px;
+      border-radius: 6px;
+      border-left: 3px solid #4ade80;
+    }
+    .task-item.pending { border-left-color: #fbbf24; }
+    .task-item.processing { border-left-color: #60a5fa; }
+    .task-item.completed { border-left-color: #4ade80; }
+    .task-item.failed { border-left-color: #ef4444; }
+
+    .task-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .task-title { font-weight: 600; font-size: 16px; }
+    .status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status.pending { background: #fbbf24; color: #1a1a1a; }
+    .status.processing { background: #60a5fa; color: white; }
+    .status.completed { background: #4ade80; color: #1a1a1a; }
+    .status.failed { background: #ef4444; color: white; }
+
+    .task-meta { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+    .task-desc { color: #9ca3af; white-space: pre-wrap; margin-bottom: 12px; }
+    .task-actions { display: flex; gap: 6px; }
+    .task-actions button { padding: 6px 12px; font-size: 12px; margin: 0; }
+
+    #edit-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.85);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    #edit-modal.active { display: flex; }
+
+    .modal-content {
+      background: #1f1f1f;
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid #374151;
+    }
+    .modal-content h2 { margin-bottom: 20px; }
+    .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+    .server-status {
+      padding: 12px 16px;
+      background: #0f0f0f;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #333;
+    }
+    .server-status.running { border-left: 3px solid #4ade80; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; }
+    .status-dot.offline { background: #6b7280; }
+
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6b7280;
+      border: 1px dashed #374151;
+      border-radius: 6px;
+    }
+
+    .loading { text-align: center; padding: 20px; color: #6b7280; }
+    .spinner {
+      border: 2px solid #374151;
+      border-top-color: #4ade80;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .form-row { display: flex; gap: 10px; }
+    .form-row input:first-child { flex: 1; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🦅 PardusCrawler Manager</h1>
+    <p class="subtitle">Automated task scheduling and agent execution platform</p>
+
+    <div class="server-status running" id="server-status">
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-text">Task Server: Running</span>
+    </div>
+
+    <div class="section">
+      <h2>Add New Task</h2>
+      <input type="text" id="task-title" placeholder="Task title (e.g., 'Daily Stock Prices')" />
+      <textarea id="task-desc" placeholder="Task description (e.g., 'Get AAPL stock price every day at market close')"></textarea>
+      <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div class="section">
+      <h2>Tasks</h2>
+      <div id="task-list">
+        <div class="loading">
+          <div class="spinner"></div>
+          Loading tasks...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Task Modal -->
+  <div id="edit-modal">
+    <div class="modal-content">
+      <h2>Edit Task</h2>
+      <input type="hidden" id="edit-task-id" />
+      <label style="display: block; margin-bottom: 5px; color: #9ca3af; font-size: 12px;">Title</label>
+      <input type="text" id="edit-title" placeholder="Task title" />
+      <label style="display: block; margin-bottom: 5px; color: #9ca3af; font-size: 12px; margin-top: 15px;">Description</label>
+      <textarea id="edit-desc" placeholder="Task description"></textarea>
+      <div class="modal-buttons">
+        <button class="secondary" onclick="closeEdit()">Cancel</button>
+        <button onclick="saveEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:13337/api';
+
+    // Load tasks from API
+    async function loadTasks() {
+      const list = document.getElementById('task-list');
+
+      try {
+        const res = await fetch(`${API_BASE}/tasks`);
+        if (!res.ok) throw new Error('Failed to load tasks');
+
+        const tasks = await res.json();
+
+        if (tasks.length === 0) {
+          list.innerHTML = '<div class="empty">No tasks yet. Add a task above to get started!</div>';
+          return;
+        }
+
+        list.innerHTML = tasks.map(task => {
+          const safeTitle = task.title.replace(/"/g, '&apos;').replace(/`/g, '&#96;');
+          const safeDesc = task.description
+            .replace(/"/g, '&apos;')
+            .replace(/`/g, '&#96;')
+            .replace(/\n/g, '\\n');
+          const safeDescForJs = task.description.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
+
+          return `
+            <div class="task-item ${task.status}">
+              <div class="task-header">
+                <span class="status ${task.status}">${task.status.toUpperCase()}</span>
+                <span class="task-title">${safeTitle}</span>
+              </div>
+              <div class="task-meta">
+                ID: ${task.id} &bull; UUID: ${task.uuid.slice(0, 8)}...
+                &bull; Created: ${new Date(task.created_at).toLocaleString()}
+              </div>
+              <div class="task-desc">${safeDesc}</div>
+              <div class="task-actions">
+                <button onclick="editTask(${task.id}, '${safeDescForJs}')">Edit</button>
+                <button class="danger" onclick="deleteTask(${task.id})">Delete</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (error) {
+        list.innerHTML = `<div class="empty" style="border-color: #ef4444;">Failed to load tasks: ${error.message}</div>`;
+      }
+    }
+
+    // Add new task
+    async function addTask() {
+      const titleInput = document.getElementById('task-title');
+      const descInput = document.getElementById('task-desc');
+
+      const title = titleInput.value.trim();
+      const desc = descInput.value.trim();
+
+      if (!title || !desc) {
+        alert('Please enter both title and description');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/tasks`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, description: desc })
+        });
+
+        if (!res.ok) throw new Error('Failed to add task');
+
+        titleInput.value = '';
+        descInput.value = '';
+        loadTasks();
+      } catch (error) {
+        alert(`Error adding task: ${error.message}`);
+      }
+    }
+
+    // Edit task modal
+    function editTask(id, escapedDesc) {
+      // Get the actual task data first
+      fetch(`${API_BASE}/tasks`)
+        .then(r => r.json())
+        .then(tasks => {
+          const task = tasks.find(t => t.id === id);
+          if (task) {
+            document.getElementById('edit-task-id').value = id;
+            document.getElementById('edit-title').value = task.title;
+            document.getElementById('edit-desc').value = task.description;
+            document.getElementById('edit-modal').classList.add('active');
+          }
+        });
+    }
+
+    function closeEdit() {
+      document.getElementById('edit-modal').classList.remove('active');
+    }
+
+    // Save task edits
+    async function saveEdit() {
+      const id = parseInt(document.getElementById('edit-task-id').value);
+      const title = document.getElementById('edit-title').value.trim();
+      const desc = document.getElementById('edit-desc').value.trim();
+
+      if (!title || !desc) {
+        alert('Please enter both title and description');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/tasks/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, description: desc })
+        });
+
+        if (!res.ok) throw new Error('Failed to update task');
+
+        closeEdit();
+        loadTasks();
+      } catch (error) {
+        alert(`Error updating task: ${error.message}`);
+      }
+    }
+
+    // Delete task
+    async function deleteTask(id) {
+      if (!confirm('Are you sure you want to delete this task?')) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/tasks/${id}`, {
+          method: 'DELETE'
+        });
+
+        if (!res.ok) throw new Error('Failed to delete task');
+
+        loadTasks();
+      } catch (error) {
+        alert(`Error deleting task: ${error.message}`);
+      }
+    }
+
+    // Check server status
+    async function checkServerStatus() {
+      try {
+        const res = await fetch(API_BASE.replace('/api', ''));
+        const dot = document.getElementById('status-dot');
+        const text = document.getElementById('status-text');
+
+        if (res.ok) {
+          dot.classList.remove('offline');
+          text.textContent = 'Task Server: Running';
+        } else {
+          dot.classList.add('offline');
+          text.textContent = 'Task Server: Offline';
+        }
+      } catch (error) {
+        const dot = document.getElementById('status-dot');
+        const text = document.getElementById('status-text');
+        dot.classList.add('offline');
+        text.textContent = 'Task Server: Offline';
+      }
+    }
+
+    // Initial load and auto-refresh
+    loadTasks();
+    setInterval(loadTasks, 5000);
+    setInterval(checkServerStatus, 10000);
+  </script>
+</body>
+</html>
