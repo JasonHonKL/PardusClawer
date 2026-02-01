@@ -99,7 +99,7 @@ const { fileURLToPath } = require('url');
 const filename = fileURLToPath(require('url').pathToFileURL(__filename));
 const directory = dirname(filename);
 
-console.log('🦅 PardusBot v1.0.0');
+console.log('🦅 PardusBot v1.0.3');
 console.log('');
 console.log('📋 Enhanced API: http://localhost:13337');
 console.log('🌐 React Web UI: http://localhost:13338');
@@ -113,9 +113,10 @@ const installDir = directory;
 // Spawn the server process
 const serverPath = join(installDir, 'cli.ts');
 
+// IMPORTANT: Use installDir as cwd so relative paths resolve correctly
 const server = spawn('bun', ['run', serverPath], {
   stdio: 'inherit',
-  cwd: process.cwd(),
+  cwd: installDir,
 });
 
 // Handle shutdown

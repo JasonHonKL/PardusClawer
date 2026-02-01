@@ -1,6 +1,6 @@
 {
   "name": "pardusbot",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Intelligent task automation system with recurring job scheduling, real-time log streaming, and multi-agent support",
   "module": "index.ts",
   "type": "module",

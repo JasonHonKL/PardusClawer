@@ -1,22 +1,34 @@
 import { spawn } from 'child_process';
 import { createServer as createTaskServer } from './ui/server';
 import { getDefaultHeartbeat } from './config/heartbeat';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+// Get the directory where this script is located
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Use the script's directory as working directory (important for npm installations)
+const serverDir = __dirname;
 
 // Start the Enhanced API server on port 13337
 console.log('Starting Enhanced API server...');
-const apiServer = spawn('bun', ['run', 'api-enhanced.ts'], {
+const apiServer = spawn('bun', ['run', join(serverDir, 'api-enhanced.ts')], {
   stdio: 'inherit',
-  cwd: process.cwd(),
+  cwd: serverDir,
 });
+
+// Create the task processor (will be started after API server is ready)
+let taskServer: ReturnType<typeof createTaskServer> | null = null;
 
 // Give API server time to start
 setTimeout(() => {
   // Create and start the task processor
-  const taskServer = createTaskServer({
+  taskServer = createTaskServer({
     heartbeat: getDefaultHeartbeat(),
     onTaskStart: (task) => console.log(`[TASK START] ${task.title} (ID: ${task.id}, UUID: ${task.uuid})`),
     onTaskComplete: (task) => console.log(`[TASK DONE] ${task.title} (ID: ${task.id})`),
-    onTaskFailed: (task, error) => console.error(`[TASK FAIL] ${task.title} (ID: ${task.id}): ${error}`),
+    onTaskFailed: (task) => console.error(`[TASK FAIL] ${task.title} (ID: ${task.id}): ${task.error}`),
     onQueueEmpty: () => console.log('[QUEUE] Empty - waiting for tasks...'),
   });
 
@@ -28,9 +40,9 @@ setTimeout(() => {
 
 // Start the React web server in a separate process
 console.log('Starting React web server...');
-const webServer = spawn('bun', ['run', 'web-react-server.ts'], {
+const webServer = spawn('bun', ['run', join(serverDir, 'web-react-server.ts')], {
   stdio: 'inherit',
-  cwd: process.cwd(),
+  cwd: serverDir,
 });
 
 webServer.stdout?.on('data', (data) => console.log(`[WEB] ${data.toString().trim()}`));
@@ -38,8 +50,8 @@ webServer.stderr?.on('data', (data) => console.error(`[WEB ERROR] ${data.toStrin
 
 // Handle shutdown
 process.on('SIGINT', () => {
-  console.log('\n\n🦅 Shutting down PardusCrawler...');
-  taskServer.stop();
+  console.log('\n\n🦅 Shutting down PardusBot...');
+  taskServer?.stop();
   apiServer.kill('SIGTERM');
   webServer.kill('SIGTERM');
   process.exit(0);
@@ -56,7 +68,7 @@ webServer.on('exit', (code) => {
   process.exit(code);
 });
 
-console.log('🦅 PardusCrawler is running!');
+console.log('🦅 PardusBot is running!');
 console.log('');
 console.log('📋 Enhanced API: http://localhost:13337 (API with SSE & Task Control)');
 console.log('🌐 React Web UI: http://localhost:13338');
