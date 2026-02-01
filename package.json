@@ -6,7 +6,7 @@
   "type": "module",
   "main": "./dist/server.ts",
   "bin": {
-    "pardusbot": "./dist/cli.js"
+    "pardusbot": "./dist/cli.cjs"
   },
   "files": [
     "dist",

@@ -1,320 +1,384 @@
 # 🦅 PardusBot
 
-An intelligent task automation system with recurring job scheduling, real-time log streaming, and multi-agent support. PardusBot enables you to schedule web scraping, data extraction, and automated research tasks with flexible recurrence patterns.
+**Your AI-powered assistant that automates research, data extraction, and scheduled tasks.**
 
-## ✨ Features
+PardusBot runs AI agents on your schedule - extract data from websites, monitor competitors, track prices, generate reports, and more. All through a simple web interface.
 
-- **🔄 Recurring Tasks** - Schedule tasks to run every X seconds/minutes/hours/days/weeks/months
-- **📊 Multiple Output Formats** - Export data to CSV, PDF, or other formats
-- **🧠 Memory Management** - Automatically compresses task memory when > 20k tokens
-- **📡 Real-time Log Streaming** - Watch agent output live via Server-Sent Events (SSE)
-- **🤖 Multi-Agent Support** - Compatible with Claude Code, OpenCode, Cursor, Pardus agents
-- **💾 Persistent Storage** - SQLite-based task queue with workspace management
-- **🎯 Modern Web UI** - React + shadcn/ui interface at `http://localhost:13338`
-- **⚙️ Configurable** - Adjust heartbeat, agent type, and system settings via API
+---
 
-## 🚀 Quick Start
+## 🚀 Get Started in 3 Steps
 
-### Installation via npm (Recommended)
+### 1. Install PardusBot (one command)
+
+Open your terminal and run:
 
 ```bash
-# Install globally (requires Bun runtime)
-npm install -g pardusbot
-
-# Or run directly with npx
 npx pardusbot
 ```
 
-**Requirement:** PardusBot requires [Bun runtime](https://bun.sh) to be installed:
+That's it! The system will start automatically.
+
+### 2. Open the Web Interface
+
+Once you see "PardusBot is running!", open your browser to:
+
+**http://localhost:13338**
+
+### 3. Create Your First Task
+
+Click "New Task" and enter:
+- **Title**: "What is this task?"
+- **Description**: "What should the AI do?"
+
+Click **Save** and PardusBot does the rest!
+
+---
+
+## 💡 What Can PardusBot Do?
+
+Here are some examples of tasks you can create:
+
+### 📊 Data Collection
+```
+Title: "Daily YC Companies"
+Description: "Extract all Y Combinator W24 batch companies from ycombinator.com. Save the results to a CSV file with company name, industry, and description."
+```
+
+### 📈 Price Monitoring
+```
+Title: "Daily Price Tracker"
+Description: "Extract current stock prices for Apple, Google, and Microsoft. Save to CSV with date and time."
+Recurrence: Every day at 4:00 PM
+```
+
+### 🔄 Competitive Monitoring
+```
+Title: "Product Price Monitor"
+Description: "Check competitor.com/product-page daily and extract the price. Alert if price changes by more than 5%."
+Recurrence: Every 6 hours
+```
+
+### 📝 Research Automation
+```
+Title: "Weekly Industry Report"
+Description: "Research latest AI trends from 3 sources. Summarize key developments and save to markdown file."
+Recurrence: Every Monday at 9:00 AM
+```
+
+### 🔍 Website Monitoring
+```
+Title: "Site Change Detector"
+Description: "Load example.com every hour and check if the main heading text has changed. If changed, save the old and new text to a log file."
+Recurrence: Every hour
+```
+
+---
+
+## 🎯 How to Use PardusBot
+
+### Creating Tasks
+
+1. **Open the web UI** at http://localhost:13338
+2. Click **"New Task"**
+3. Fill in the details:
+   - **Title**: Short description
+   - **Description**: What you want the AI to do
+   - **Due time**: When should it run? (default: now)
+   - **Recurrence**: (optional) How often should it repeat?
+
+4. Click **Save**
+
+That's it! PardusBot will execute your task at the scheduled time.
+
+### Managing Tasks
+
+In the web UI, you can:
+
+- **View all tasks** - See pending, running, and completed tasks
+- **Force run** - Click ▶️ to run any task immediately
+- **Restart** - Click 🔄 to re-run completed or failed tasks
+- **Delete** - Click 🗑️ to remove tasks
+- **View logs** - Click 📄 to see what the AI did
+
+### Downloading Results
+
+When PardusBot completes a task:
+
+1. Click the **"Files"** button in the workspace section
+2. Find your task's workspace
+3. **Download** any files (CSV, PDF, TXT, JSON, etc.)
+
+---
+
+## ⚙️ Advanced Settings (Optional)
+
+### Change How Often PardusBot Checks for Tasks
+
+1. Open **Settings** in the web UI
+2. Find **Heartbeat** (default: 60 seconds)
+3. Adjust the value:
+   - **10 seconds** = Checks very frequently (higher CPU usage)
+   - **60 seconds** = Default (balanced)
+   - **300 seconds** (5 minutes) = Less frequent (saves resources)
+
+### Switch AI Agent
+
+1. Open **Settings** in the web UI
+2. Find **Agent Type**
+3. Choose from:
+   - **Claude Code** (default) - Best for most tasks
+   - **OpenCode** - Alternative AI agent
+   - **Cursor** - Alternative AI agent
+   - **Pardus** - Customizable (needs API key)
+
+---
+
+## 📋 Example Task Templates
+
+### Simple One-Time Task
+```
+Title: "Extract Tech News"
+Description: "Go to techcrunch.com and extract the 5 latest headlines. Save to a CSV with headline, URL, and publication date."
+Due time: Now
+```
+
+### Recurring Daily Task
+```
+Title: "Morning News Summary"
+Description: "Visit nytimes.com/technology and extract the top 10 technology articles. Save headline and summary to CSV."
+Due time: 9:00 AM
+Recurrence: Every 1 day
+```
+
+### Recurring Weekly Task
+```
+Title: "Competitor Analysis"
+Description: "Check competitor.com/products page and extract all product names and prices. Compare with previous week's data."
+Due time: Monday 9:00 AM
+Recurrence: Every 1 week
+```
+
+### High-Frequency Monitoring
+```
+Title: "Stock Alert"
+Description: "Check finance.yahoo.com/quote/AAPL and extract current stock price. If price is above $200, save alert to file."
+Due time: Now
+Recurrence: Every 5 minutes
+```
+
+---
+
+## 🛑 Stopping PardusBot
+
+When you're done:
+
+1. Go to your terminal where PardusBot is running
+2. Press **Ctrl+C** (Windows/Linux) or **Cmd+C** (Mac)
+3. PardusBot will shut down gracefully
+
+---
+
+## 🔄 Running PardusBot Again
+
+To start PardusBot again, just run:
+
+```bash
+npx pardusbot
+```
+
+All your tasks are saved automatically and will resume running.
+
+---
+
+## 💾 Data & Files
+
+### Where is my data stored?
+
+All data is stored in the `pardus_data` folder in the directory where you run PardusBot:
+- **Tasks database**: `pardus_data/pardus_queue.db`
+- **Task workspaces**: `pardus_data/workspaces/`
+- **Task memories**: `pardus_data/memory/`
+- **Task logs**: `pardus_data/logs/`
+
+### Backup Your Data
+
+To backup your tasks and data:
+
+```bash
+# Copy the pardus_data folder
+cp -r pardus_data pardus_backup
+```
+
+---
+
+## 🆘 Troubleshooting
+
+### PardusBot won't start
+
+**Check if Bun is installed:**
+```bash
+bun --version
+```
+
+If you see an error, install Bun:
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```
 
-### Installation from Source
+### Web UI won't load
+
+1. Make sure PardusBot is running (check your terminal)
+2. Check if port 13338 is available:
+   ```bash
+   lsof -i :13338
+   ```
+3. If the port is taken, stop the process using it
+
+### Task not executing
+
+1. Check the **Due Time** - tasks only run when the current time is past the due time
+2. Click **"Force Run"** button to execute immediately
+3. Check the **Logs** to see what happened
+
+### Want to see what's happening?
+
+- **Task Logs**: Click the 📄 button on any task to see real-time AI output
+- **Server Status**: Check the terminal where PardusBot is running
+
+---
+
+## 🎓 For Advanced Users
+
+### Running from Source
+
+If you want to modify PardusBot or run from source:
 
 ```bash
 # Clone the repository
 git clone <repository-url>
 cd PardusClawer
 
-# Install dependencies (using Bun)
+# Install dependencies
 bun install
-```
 
-### Start the Server
-
-```bash
-# Start all services (API + Web UI + Task Processor)
+# Run PardusBot
 bun run server
 ```
 
-This starts:
-- **Enhanced API Server** on `http://localhost:13337`
-- **React Web UI** on `http://localhost:13338`
-- **Task Processor** with default 60-second heartbeat
+### API Access
 
-### Create Your First Task
+PardusBot exposes a REST API on `http://localhost:13337`:
 
-Via **Web UI** (Recommended):
-1. Open `http://localhost:13338`
-2. Click "New Task"
-3. Enter title and description
-4. Set due time and recurrence (optional)
-5. Save and wait for execution
-
-Via **API**:
+**Create a task:**
 ```bash
 curl -X POST http://localhost:13337/api/tasks \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Extract YC W24 Companies",
-    "description": "Find all Y Combinator W24 batch companies and export to CSV",
-    "due_time": '$(date +%s)000',
-    "recurrence_type": "none"
+    "title": "My Task",
+    "description": "Do something cool",
+    "due_time": 1704067200000
   }'
 ```
 
-## 📖 Usage
-
-### Task Scheduling
-
-Create one-time or recurring tasks:
-
-```typescript
-// One-time task
-POST /api/tasks
-{
-  "title": "Daily Stock Prices",
-  "description": "Extract AAPL, GOOGL, MSFT stock prices",
-  "due_time": 1704067200000,
-  "recurrence_type": "none"
-}
-
-// Recurring task (every day at 9am)
-{
-  "title": "Daily Stock Prices",
-  "description": "Extract AAPL, GOOGL, MSFT stock prices",
-  "due_time": 1704067200000,
-  "recurrence_type": "days",
-  "recurrence_interval": 1
-}
-
-// Recurring task (every 10 seconds)
-{
-  "title": "High-Frequency Monitor",
-  "description": "Monitor website changes",
-  "due_time": 1704067200000,
-  "recurrence_type": "seconds",
-  "recurrence_interval": 10
-}
-```
-
-### Available Recurrence Types
-
-- `seconds` - For testing or high-frequency tasks
-- `minutes` - For frequent short tasks
-- `hours` - For hourly jobs
-- `days` - For daily tasks
-- `weeks` - For weekly tasks
-- `months` - For monthly tasks
-
-### Real-time Log Streaming
-
-Watch agent output in real-time:
-
-```typescript
-// Via browser EventSource
-const eventSource = new EventSource('http://localhost:13337/api/logs/{uuid}/stream');
-
-eventSource.addEventListener('log', (event) => {
-  const data = JSON.parse(event.data);
-  console.log(data.message); // Log line appears instantly
-});
-```
-
-Or view in the Web UI by clicking on a task and opening the "Agent Logs" section.
-
-### Workspace Files
-
-View and download generated files:
-
+**View all tasks:**
 ```bash
-# List all workspaces
-GET /api/workspaces
-
-# List files in a workspace
-GET /api/workspaces/{uuid}/files
-
-# Download a file
-GET /api/workspaces/{uuid}/download/{filename}
-
-# Delete a workspace
-DELETE /api/workspaces/{uuid}
+curl http://localhost:13337/api/tasks
 ```
 
-Supported file types: `.csv`, `.pdf`, `.txt`, `.md`, `.json`, `.log`
-
-### Agent Configuration
-
-Switch between different AI agents:
-
+**Get task logs:**
 ```bash
-# Check current agent
-GET /api/config
-
-# Switch to different agent
-POST /api/config/agent
-{
-  "agentType": "claude-code" | "opencode" | "cursor" | "pardus"
-}
+curl http://localhost:13337/api/logs/{task-uuid}
 ```
 
-### Heartbeat Configuration
+**Full API documentation:** See [API Endpoints](#-api-endpoints) section below.
 
-Adjust how often the task processor checks for due tasks:
-
-```bash
-# Update heartbeat (in milliseconds)
-POST /api/config/heartbeat
-{
-  "heartbeat": 5000  // Check every 5 seconds
-}
-```
-
-Lower heartbeat = more responsive but higher CPU usage.
-
-## 🧪 Testing
-
-PardusBot includes comprehensive test suites:
-
-```bash
-# Test memory management
-bun run test:memory
-
-# Test log streaming (requires server running)
-bun run server  # Terminal 1
-bun run test:logs  # Terminal 2
-
-# Test recurring tasks (takes 40 seconds)
-bun run test:recurring
-
-# Run all tests
-bun run test:all
-```
-
-See [tests/README.md](tests/README.md) for detailed test documentation.
-
-## 📁 Project Structure
-
-```
-PardusClawer/
-├── agent/              # Agent implementations
-│   ├── claude-code.ts  # Claude Code CLI agent
-│   ├── opencode.ts     # OpenCode agent
-│   ├── cursor.ts       # Cursor agent
-│   ├── pardus.ts       # Pardus agent
-│   └── test-agent.ts   # Demo test agent
-├── api-enhanced.ts     # Enhanced API server
-├── config/             # Configuration management
-│   ├── agentconfig.ts  # Agent type configuration
-│   ├── event-emitter.ts # Event bus for SSE
-│   ├── heartbeat.ts    # Heartbeat settings
-│   └── workspace.ts    # Workspace directory management
-├── db/                 # Database layer
-│   ├── db.ts          # SQLite connection
-│   ├── queue.ts       # Task queue operations
-│   └── schema.ts      # Type definitions
-├── memory/             # Memory management
-│   └── memory.ts      # Memory CRUD operations
-├── prompt/             # Agent prompts
-│   └── prompt.ts      # Main task prompt template
-├── server.ts           # Main entry point
-├── ui/                 # Task processor
-│   └── server.ts      # Queue processing logic
-├── web-react/          # React web UI
-│   ├── src/
-│   │   ├── components/ # UI components
-│   │   ├── pages/      # Route pages
-│   │   └── lib/        # API client
-│   └── dist/          # Production build
-├── tests/              # Test suites
-│   ├── test-recurring.ts
-│   ├── test-log-streaming.ts
-│   └── test-memory.ts
-└── pardus_data/        # Runtime data (gitignored)
-    ├── memory/         # Task memories
-    ├── workspaces/     # Agent workspaces
-    └── logs/           # Task logs
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-No environment variables required! PardusBot uses:
-- SQLite for data storage (`pardus_data/pardus.db`)
-- File-based memory system
-- In-process task queue
-
-### Agent Setup
-
-**Claude Code (Default):**
-```bash
-# Install Claude Code CLI
-npm install -g @anthropic-ai/claude-code
-```
-
-**Other Agents:**
-Configure via Web UI or API:
-- `opencode` - OpenCode agent
-- `cursor` - Cursor agent
-- `pardus` - PardusAgent (needs API key)
+---
 
 ## 📊 API Endpoints
 
 ### Task Management
 - `GET /api/tasks` - List all tasks
 - `POST /api/tasks` - Create new task
-- `PATCH /api/tasks/:id` - Update task
-- `DELETE /api/tasks/:id` - Delete task
 - `POST /api/tasks/:id/force` - Force immediate execution
 - `POST /api/tasks/:id/restart` - Restart failed/completed task
 - `DELETE /api/tasks/:id/cancel` - Cancel processing task
+- `DELETE /api/tasks/:id` - Delete task
 
 ### Workspace & Files
 - `GET /api/workspaces` - List all workspaces
 - `GET /api/workspaces/:uuid/files` - List workspace files
 - `GET /api/workspaces/:uuid/download/:filename` - Download file
-- `DELETE /api/workspaces/:uuid/files/:filename` - Delete file
-- `DELETE /api/workspaces/:uuid` - Delete entire workspace
+- `DELETE /api/workspaces/:uuid` - Delete workspace
 
-### Logs & Streaming
+### Logs
 - `GET /api/logs/:uuid` - Get task logs
-- `GET /api/logs/:uuid/stream` - SSE log streaming endpoint
+- `GET /api/logs/:uuid/stream` - Real-time log streaming
 
 ### Configuration
 - `GET /api/config` - Get current config
 - `POST /api/config/heartbeat` - Update heartbeat
 - `POST /api/config/agent` - Switch agent type
 
-### Server Control
+### Server
 - `GET /api/server/status` - Server status & statistics
 
-## 🤝 Contributing
+---
 
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+## 🧪 Testing
+
+PardusBot includes test suites for developers:
+
+```bash
+cd PardusClawer
+bun run test:all
+```
+
+---
+
+## 📁 Project Structure
+
+```
+PardusClawer/
+├── agent/              # AI agent implementations
+├── db/                 # Database & task queue
+├── memory/             # Task memory management
+├── prompt/             # AI prompts
+├── web-react/          # Web UI
+├── pardus_data/        # Your data (auto-created)
+└── cli.ts              # Entry point
+```
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables
+
+No configuration required! PardusBot uses:
+- SQLite for data storage
+- File-based memory system
+- Built-in task queue
+
+### Agent Setup
+
+**Claude Code (Default):**
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+**Other Agents:** Configurable via web UI
+
+---
 
 ## 📝 License
 
-MIT License - see LICENSE file for details
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
 
 ## 🙏 Acknowledgments
 
+Built with:
 - **Bun** - Fast JavaScript runtime
 - **React + shadcn/ui** - Modern UI framework
 - **SQLite** - Embedded database
@@ -322,4 +386,51 @@ MIT License - see LICENSE file for details
 
 ---
 
+## 🤝 Support
+
+For issues, questions, or contributions:
+- Open an issue on GitHub
+- Check existing documentation
+- Review test files for examples
+
+---
+
 **Made with ❤️ by the PardusBot team**
+
+---
+
+## 🎯 Quick Reference
+
+### Common Commands
+
+```bash
+# Start PardusBot
+npx pardusbot
+
+# Stop PardusBot
+# Press Ctrl+C in the terminal
+
+# View logs in real-time
+# Open http://localhost:13338 and click the 📄 button on any task
+
+# Download generated files
+# Open http://localhost:13338 → Click "Files" → Download
+
+# Check task status
+# Open http://localhost:13338 → Tasks
+```
+
+### Task Examples
+
+- **Web scraping**: "Extract all products from example.com/products"
+- **Research**: "Find recent AI articles and summarize key points"
+- **Monitoring**: "Check stock price every hour and save to CSV"
+- **Automation**: "Generate daily report from website data"
+
+---
+
+**Ready to automate your tasks?**
+
+```bash
+npx pardusbot
+```

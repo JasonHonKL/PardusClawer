@@ -96,8 +96,8 @@ const { spawn } = require('child_process');
 const { join, dirname } = require('path');
 const { fileURLToPath } = require('url');
 
-const __filename = fileURLToPath(require('url').pathToFileURL(__filename));
-const __dirname = dirname(__filename);
+const filename = fileURLToPath(require('url').pathToFileURL(__filename));
+const directory = dirname(filename);
 
 console.log('🦅 PardusBot v1.0.0');
 console.log('');
@@ -108,7 +108,7 @@ console.log('Press Ctrl+C to stop');
 console.log('');
 
 // Get the installation directory
-const installDir = __dirname;
+const installDir = directory;
 
 // Spawn the server process
 const serverPath = join(installDir, 'cli.ts');
@@ -132,8 +132,8 @@ server.on('exit', (code) => {
 `;
 
 const { writeFileSync } = await import('fs');
-writeFileSync(join('dist', 'cli.js'), cliWrapper, { mode: 0o755 });
-console.log('  ✓ cli.js (wrapper for npm bin)');
+writeFileSync(join('dist', 'cli.cjs'), cliWrapper, { mode: 0o755 });
+console.log('  ✓ cli.cjs (wrapper for npm bin)');
 
 console.log('✅ Build complete!');
 console.log('');
