@@ -6,6 +6,21 @@ PardusBot runs AI agents on your schedule - extract data from websites, monitor 
 
 ---
 
+## 🎬 See It In Action
+
+Watch PardusBot demonstrate its capabilities:
+
+- [Demo Video 1](https://x.com/EinNewton/status/2017962542027747468/video/1)
+- [Demo Video 2](https://x.com/EinNewton/status/2017962542027747468/video/2)
+
+---
+
+## 🌟 Also Check Out
+
+**[Pardus AI](https://pardusai.org/)** - Your intelligent data science AI agent for advanced analytics and automation.
+
+---
+
 ## 🚀 Get Started in 3 Steps
 
 ### 1. Install PardusBot (one command)
