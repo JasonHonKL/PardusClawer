@@ -1,17 +1,50 @@
 {
-  "name": "pardusclawer",
+  "name": "pardusbot",
+  "version": "1.0.0",
+  "description": "Intelligent task automation system with recurring job scheduling, real-time log streaming, and multi-agent support",
   "module": "index.ts",
   "type": "module",
-  "private": true,
+  "main": "./dist/server.ts",
+  "bin": {
+    "pardusbot": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "web-react/dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "server": "bun run server.ts",
-    "start": "bun run cli.tsx",
+    "start": "bun run cli.ts",
     "run-once": "bun run index.ts",
+    "build": "bun run build.ts",
+    "build:web": "cd web-react && bun run build",
+    "prepublishOnly": "bun run build",
     "test": "bun test",
     "test:recurring": "bun run tests/test-recurring.ts",
     "test:logs": "bun run tests/test-log-streaming.ts",
     "test:memory": "bun run tests/test-memory.ts",
     "test:all": "bun run tests/test-memory.ts && bun run tests/test-recurring.ts"
+  },
+  "keywords": [
+    "task-automation",
+    "cron",
+    "scheduler",
+    "recurring-jobs",
+    "agent",
+    "claude",
+    "web-scraping",
+    "automation",
+    "cli"
+  ],
+  "author": "PardusBot Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@types/bun": "^1.3.8"

@@ -1,0 +1,64 @@
+# Source files (root level only - we publish files from dist/)
+*.ts
+*.tsx
+src/
+tests/
+
+# Individual root files that shouldn't be published
+api.ts
+cli.tsx
+build.ts
+
+# Development configuration
+tsconfig.json
+vite.config.ts
+jest.config.js
+vitest.config.ts
+.eslintrc.js
+.prettierrc
+.playwright/
+
+# Dependencies
+node_modules/
+
+# Data and runtime files
+pardus_data/
+data/
+.env
+.env.*
+*.log
+/tmp/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+.claude/
+.cursor/
+
+# Build artifacts that shouldn't be published
+web-react/node_modules/
+web-react/src/
+web-react/package.json
+web-react/tsconfig.json
+web-react/vite.config.ts
+web-react/tailwind.config.js
+web-react/postcss.config.js
+
+# Documentation (keep README.md)
+CLAUDE.md
+*.md
+!README.md
+
+# Test files
+tests/
+*.test.ts
+*.spec.ts
+coverage/
+
+# Misc
+.DS_Store
+*.tgz

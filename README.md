@@ -1,6 +1,6 @@
-# 🦅 PardusCrawler
+# 🦅 PardusBot
 
-An intelligent task automation system with recurring job scheduling, real-time log streaming, and multi-agent support. PardusCrawler enables you to schedule web scraping, data extraction, and automated research tasks with flexible recurrence patterns.
+An intelligent task automation system with recurring job scheduling, real-time log streaming, and multi-agent support. PardusBot enables you to schedule web scraping, data extraction, and automated research tasks with flexible recurrence patterns.
 
 ## ✨ Features
 
@@ -15,7 +15,22 @@ An intelligent task automation system with recurring job scheduling, real-time l
 
 ## 🚀 Quick Start
 
-### Installation
+### Installation via npm (Recommended)
+
+```bash
+# Install globally (requires Bun runtime)
+npm install -g pardusbot
+
+# Or run directly with npx
+npx pardusbot
+```
+
+**Requirement:** PardusBot requires [Bun runtime](https://bun.sh) to be installed:
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+### Installation from Source
 
 ```bash
 # Clone the repository
@@ -170,7 +185,7 @@ Lower heartbeat = more responsive but higher CPU usage.
 
 ## 🧪 Testing
 
-PardusCrawler includes comprehensive test suites:
+PardusBot includes comprehensive test suites:
 
 ```bash
 # Test memory management
@@ -236,7 +251,7 @@ PardusClawer/
 
 ### Environment Variables
 
-No environment variables required! PardusCrawler uses:
+No environment variables required! PardusBot uses:
 - SQLite for data storage (`pardus_data/pardus.db`)
 - File-based memory system
 - In-process task queue
@@ -307,4 +322,4 @@ MIT License - see LICENSE file for details
 
 ---
 
-**Made with ❤️ by the PardusCrawler team**
+**Made with ❤️ by the PardusBot team**
